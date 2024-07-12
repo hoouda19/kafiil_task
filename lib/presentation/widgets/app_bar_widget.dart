@@ -9,21 +9,24 @@ class AppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            size: 20,
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0, bottom: 20),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              size: 20,
+            ),
+            onPressed: onTap,
           ),
-          onPressed: onTap,
-        ),
-        TextWidget(
-          text: label,
-          size: 20,
-          weight: FontWeight.bold,
-        ),
-      ],
+          TextWidget(
+            text: label,
+            size: 20,
+            weight: FontWeight.bold,
+          ),
+        ],
+      ),
     );
   }
 }

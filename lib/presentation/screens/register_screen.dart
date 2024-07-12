@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../style/colors.dart';
-import '../style/text_form_field_style.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/step_indicator_widget.dart';
 import '../widgets/text_form_field_widget.dart';
@@ -20,53 +19,82 @@ class _RegisterScreenState extends State<RegisterScreen> {
   var first_name = '';
   var last_name = '';
   var password_confirmation = '';
-  // var currentPage = 1;
+  final _form = GlobalKey<FormState>();
+  var validationMessage = false;
 
   @override
   Widget build(BuildContext context) {
-    final _form = GlobalKey<FormState>();
     var mediaQuery = MediaQuery.of(context).size;
 
     void _submit() {
-      Navigator.of(context).pushNamed('/registercompletedata');
-      // setState(() {
-      //   currentPage = 2;
-      //   print(currentPage);
-      // });
+      if (_form.currentState!.validate()) {
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text('Processing Data')),
+        // );
+        Navigator.of(context).pushNamed('/registercompletedata');
+      } else {
+        setState(() {
+          validationMessage = true;
+          print(validationMessage);
+        });
+      }
     }
 
+    var listNumbers = ['Seller', 'Buyer', 'Both'];
+    String workValue = 'Seller';
+
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-            child: SizedBox(
-          height: mediaQuery.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               AppBarWidget(
                 label: 'Register',
                 onTap: () => Navigator.of(context).pop(),
               ),
-
-              const StepIndicatorWidget(
-                currentPage: 1,
-              ),
+              validationMessage
+                  ? Container(
+                      color: const Color.fromRGBO(255, 240, 237, 1),
+                      margin: const EdgeInsets.all(10),
+                      child: const Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Icon(
+                              Icons.error_outline,
+                              color: Colors.red,
+                            ),
+                          ),
+                          TextWidget(
+                            text: 'Fill the required fields',
+                            color: Colors.red,
+                          )
+                        ],
+                      ),
+                    )
+                  : Container(),
               Form(
                   key: _form,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      const StepIndicatorWidget(
+                        currentPage: 1,
+                      ),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Expanded(
                             child: TextFormFieldWidget(
+                              defaultValue: '',
                               label: 'First Name',
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
-                                  return 'Enter a valid Email Adress';
+                                  return 'Enter a valid Name';
                                 }
                                 return null;
                               },
@@ -83,10 +111,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           Expanded(
                             child: TextFormFieldWidget(
+                              defaultValue: '',
                               label: 'Last Name',
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
-                                  return 'Enter a valid Email Adress';
+                                  return 'Enter a valid Name';
                                 }
                                 return null;
                               },
@@ -101,6 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ],
                       ),
                       TextFormFieldWidget(
+                        defaultValue: '',
                         label: 'Email Adress',
                         validator: (value) {
                           if (value == null ||
@@ -118,6 +148,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         textCapitalization: TextCapitalization.none,
                       ),
                       TextFormFieldWidget(
+                        defaultValue: '',
+                        visibilityIcon: true,
                         label: 'Password',
                         validator: (value) {
                           if (value == null || value.trim().length < 6) {
@@ -134,10 +166,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         obscureText: true,
                       ),
                       TextFormFieldWidget(
+                        defaultValue: '',
+                        visibilityIcon: true,
                         label: 'Confirm Password',
                         validator: (value) {
-                          if (value == null || value.trim().length < 6) {
-                            return 'Enter a valid Password';
+                          if (value == null ||
+                              value.trim().length < 6 ||
+                              password_confirmation != password) {
+                            return 'The password not same';
                           }
                           return null;
                         },
@@ -155,7 +191,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Padding(
                             padding: EdgeInsets.only(top: 15.0, bottom: 10),
                             child: TextWidget(
-                              text: 'Gender',
+                              text: 'User Type',
                             ),
                           ),
                         ],
@@ -166,17 +202,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(12)),
-                        child: const Padding(
+                        child: Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [],
+                          child: DropdownButtonHideUnderline(
+                            child: ButtonTheme(
+                              alignedDropdown: true,
+                              child: DropdownButton(
+                                value: workValue,
+                                items: listNumbers
+                                    .map<DropdownMenuItem>(
+                                      (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: SizedBox(
+                                            width: mediaQuery.width / 3,
+                                            child: Text(e.toString())),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    workValue = newValue;
+                                  });
+                                },
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ],
                   )),
-
+              SizedBox(
+                height: mediaQuery.height / 14,
+              ),
               SizedBox(
                 width: mediaQuery.width / 2,
                 height: mediaQuery.width / 7,
@@ -193,22 +250,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       size: 15,
                     )),
               ),
-
-              // AnotherStepper(
-              //   activeBarColor: mainColor,
-              //   activeIndex: 2,
-              //   // inActiveBarColor: mainColor,
-
-              //   stepperList: stepperData,
-              //   stepperDirection: Axis.horizontal,
-              //   iconWidth:
-              //       40, // Height that will be applied to all the stepper icons
-              //   iconHeight:
-              //       40, // Width that will be applied to all the stepper icons
-              // ),
             ],
-          ),
-        )),
+          )),
+        ),
       ),
     );
   }

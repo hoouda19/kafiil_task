@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:kafiil_taskt/presentation/widgets/chip_widget.dart';
+import 'package:kafiil_taskt/presentation/widgets/button_widget.dart';
+import 'package:material_tag_editor/tag_editor.dart';
 
-import '../style/colors.dart';
-import '../style/text_form_field_style.dart';
+import '../widgets/Container_widget.dart';
 import '../widgets/app_bar_widget.dart';
+import '../widgets/circle_image_widget.dart';
+import '../widgets/favourite_social_widget.dart';
+import '../widgets/gender_widget.dart';
+import '../widgets/multiline_text_field.dart';
 import '../widgets/step_indicator_widget.dart';
-import '../widgets/text_form_field_widget.dart';
 import '../widgets/text_widget.dart';
 
 class RegisterCompleteDataScreen extends StatefulWidget {
@@ -17,19 +22,24 @@ class RegisterCompleteDataScreen extends StatefulWidget {
 
 class _RegisterCompleteDataScreenState
     extends State<RegisterCompleteDataScreen> {
+  var salaryText = '';
+  var birthDateText = DateTime.now();
+  var genderText = '';
+  var skillsText = '';
+  var costText = 1000;
+  int selectedOption = 1;
+  List<String> values = [];
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController aboutText = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
-    var about = '';
-    var salary = '';
-    var birthDate = DateTime.now();
-    var gender = '';
-    var skills = '';
-    var cost = 1000;
-    final _form = GlobalKey<FormState>();
     var mediaQuery = MediaQuery.of(context).size;
-    int selectedOption = 1;
 
-    void _submit() {}
+    void _submit() {
+      Navigator.of(context).pushNamed('/homescreen');
+    }
 
     return Scaffold(
       body: Padding(
@@ -43,67 +53,14 @@ class _RegisterCompleteDataScreenState
               label: 'Register',
               onTap: () => Navigator.of(context).pop(),
             ),
-
             const StepIndicatorWidget(
               currentPage: 2,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                            color: mainColor,
-                          ),
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child:
-                              Image.asset('assets/images/person_avatar.png')),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.green,
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-
-            const Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 10),
-              child: TextWidget(
-                text: 'About',
-              ),
-            ),
-            SizedBox(
-              height: mediaQuery.width / 3,
-              child: TextField(
-                maxLines: null,
-                expands: true,
-                // keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                ),
-              ),
+            const CircleImageWidget(image: 'assets/images/person.jpg'),
+            MultilineTextField(
+              label: 'About',
+              defaultValue: '',
+              controller: aboutText,
             ),
             const Padding(
               padding: EdgeInsets.only(top: 15.0, bottom: 10),
@@ -120,133 +77,96 @@ class _RegisterCompleteDataScreenState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  const Card(
-                      shape: CircleBorder(),
-                      child: Padding(
-                        padding: EdgeInsets.all(7),
-                        child: Icon(
-                          Icons.minimize_sharp,
-                          color: Colors.green,
-                        ),
-                      )),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        costText -= 500;
+                      });
+                    },
+                    child: Card(
+                        shape: const CircleBorder(),
+                        child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Image.asset('assets/icons/union.png'))),
+                  ),
                   TextWidget(
-                    text: 'SAR $cost',
+                    text: 'SAR $costText',
                     weight: FontWeight.bold,
                   ),
-                  const Card(
-                      shape: CircleBorder(),
-                      child: Padding(
-                        padding: EdgeInsets.all(7),
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.green,
-                        ),
-                      )),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        costText += 500;
+                      });
+                    },
+                    child: const Card(
+                        shape: CircleBorder(),
+                        child: Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Icon(
+                            Icons.add,
+                            size: 20,
+                            color: Colors.green,
+                          ),
+                        )),
+                  ),
                 ],
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 15.0, bottom: 10),
-              child: TextWidget(
-                text: 'Birth Date',
-              ),
-            ),
-            Container(
-              width: double.infinity,
+            ContainerWidget(
+              label: 'Birth Date',
               height: mediaQuery.height / 12,
-              decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12)),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(
-                      Icons.date_range_outlined,
-                      color: Colors.grey,
-                    )
-                  ],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1980, 8),
+                            lastDate: DateTime(2028));
+                      },
+                      icon: const Icon(
+                        Icons.date_range_outlined,
+                        color: Colors.grey,
+                      ))
+                ],
+              ),
+            ),
+            const GenderWidget(),
+            ContainerWidget(
+              label: 'Skills',
+              height: mediaQuery.height / 7,
+              child: TagEditor(
+                length: values.length,
+                delimiters: [',', ' '],
+                hasAddButton: true,
+                inputDecoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Enter your tags...',
+                ),
+                onTagChanged: (newValue) {
+                  setState(() {
+                    values.add(newValue);
+                  });
+                },
+                tagBuilder: (context, index) => ChipWidget(
+                  index: index,
+                  label: values[index],
+                  onDeleted: (value) {
+                    setState(() {
+                      values.removeAt(index);
+                    });
+                  },
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 15.0, bottom: 10),
-              child: TextWidget(
-                text: 'Gender',
-              ),
-            ),
-            Column(
-              children: [
-                ListTile(
-                  title: const Text('Male'),
-                  leading: Radio<int>(
-                    value: 1,
-                    groupValue: selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedOption = value!;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Female'),
-                  leading: Radio<int>(
-                    value: 2,
-                    groupValue: selectedOption,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedOption = value!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 15.0, bottom: 10),
-              child: TextWidget(
-                text: 'Skills',
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 15.0, bottom: 10),
-              child: TextWidget(
-                text: 'Favourite Social Media',
-              ),
-            ),
-
+            const FavouriteSocialWidget(),
             SizedBox(
               height: mediaQuery.height / 30,
             ),
-            SizedBox(
-              width: double.infinity,
-              height: mediaQuery.width / 7,
-              child: ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      backgroundColor: const Color.fromARGB(255, 29, 191, 115)),
-                  child: const TextWidget(
-                    text: 'Next',
-                    color: Colors.white,
-                    size: 15,
-                  )),
-            ),
-            // AnotherStepper(
-            //   activeBarColor: mainColor,
-            //   activeIndex: 2,
-            //   // inActiveBarColor: mainColor,
-
-            //   stepperList: stepperData,
-            //   stepperDirection: Axis.horizontal,
-            //   iconWidth:
-            //       40, // Height that will be applied to all the stepper icons
-            //   iconHeight:
-            //       40, // Width that will be applied to all the stepper icons
-            // ),
+            ButtonWidget(text: 'Submit', onTap: _submit),
           ],
         )),
       ),

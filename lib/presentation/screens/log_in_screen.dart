@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:kafiil_taskt/presentation/widgets/text_widget.dart';
 
 import '../style/colors.dart';
-import '../style/text_form_field_style.dart';
 import '../widgets/app_bar_widget.dart';
 import '../widgets/button_widget.dart';
+import '../widgets/check_box_widget.dart';
 import '../widgets/text_form_field_widget.dart';
 
 class LogInScreen extends StatelessWidget {
-  const LogInScreen({super.key});
+  LogInScreen({super.key});
 
+  final _form = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final _form = GlobalKey<FormState>();
     var mediaQuery = MediaQuery.of(context).size;
     var email = '';
     var password = '';
@@ -33,9 +33,8 @@ class LogInScreen extends StatelessWidget {
                 onTap: () {},
               ),
               Container(
-                margin: const EdgeInsets.only(
-                    top: 30, bottom: 20, left: 20, right: 20),
-                width: 200,
+                margin: const EdgeInsets.only(top: 30, bottom: 20),
+                width: mediaQuery.width / 2,
                 child: Image.asset('assets/images/login_cuate.png'),
               ),
               SingleChildScrollView(
@@ -49,6 +48,7 @@ class LogInScreen extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextFormFieldWidget(
+                            defaultValue: '',
                             label: 'Email Adress',
                             validator: (value) {
                               if (value == null ||
@@ -61,7 +61,6 @@ class LogInScreen extends StatelessWidget {
                             onSaved: (newValue) {
                               email = newValue!;
                             },
-                            autocorrect: false,
                             inputType: TextInputType.emailAddress,
                             textCapitalization: TextCapitalization.none,
                           ),
@@ -69,6 +68,8 @@ class LogInScreen extends StatelessWidget {
                           //       height: 20,
                           //     ),
                           TextFormFieldWidget(
+                            defaultValue: '',
+                            visibilityIcon: true,
                             label: 'Password',
                             validator: (value) {
                               if (value == null || value.trim().length < 6) {
@@ -79,7 +80,6 @@ class LogInScreen extends StatelessWidget {
                             onSaved: (newValue) {
                               password = newValue!;
                             },
-                            autocorrect: false,
                             inputType: TextInputType.visiblePassword,
                             textCapitalization: TextCapitalization.none,
                             obscureText: true,
@@ -91,15 +91,8 @@ class LogInScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              SizedBox(
-                                width: 20,
-                                child: Checkbox(
-                                  materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  activeColor: mainColor,
-                                  value: RememberMeCheck,
-                                  onChanged: (value) {},
-                                ),
+                              CheckBoxWidget(
+                                checkValue: RememberMeCheck,
                               ),
                               const SizedBox(
                                 width: 10,

@@ -22,15 +22,18 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.montserratTextTheme(
           Theme.of(context).textTheme,
         ),
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 29, 191, 115)),
+        colorScheme: const ColorScheme.light(
+          primary: Color.fromARGB(255, 29, 191, 115),
+          secondary: Color.fromARGB(255, 29, 191, 115),
+        ),
         useMaterial3: true,
       ),
       routes: {
         '/': (context) => LogInScreen(),
-        '/register': (context) => RegisterScreen(),
-        '/registercompletedata': (context) => RegisterCompleteDataScreen(),
-        '/homescreen': (context) => HomeScreen()
+        '/register': (context) => const RegisterScreen(),
+        '/registercompletedata': (context) =>
+            const RegisterCompleteDataScreen(),
+        '/homescreen': (context) => const HomeScreen()
       },
     );
   }

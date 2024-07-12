@@ -1,76 +1,73 @@
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// import 'package:slash_app/presentation/widgets/home_app_bar_widget.dart';
-// import 'package:slash_app/presentation/widgets/home_banner_widget.dart';
-// import 'package:slash_app/presentation/widgets/home_categories_list_widget.dart';
-// import 'package:slash_app/presentation/widgets/home_search_widget.dart';
-// import 'package:slash_app/presentation/widgets/nav_bar_widget.dart';
-// import 'package:slash_app/presentation/widgets/product_widget.dart';
-// import 'package:slash_app/presentation/widgets/title_row_widget.dart';
+import '../style/colors.dart';
+import 'countries_screen.dart';
+import 'profile_screen.dart';
+import 'services_screen.dart';
 
-// class HomeScreen extends StatelessWidget {
-//   const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     var mediaQuery = MediaQuery.sizeOf(context);
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-//     return SafeArea(
-//       child: Stack(
-//         alignment: Alignment.bottomCenter,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.only(left: 15.0),
-//             child: ListView(
-//               shrinkWrap: true,
-//               children: [
-//                 const HomeAppBarWidget(),
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     SizedBox(
-//                         width: mediaQuery.width * 3 / 4,
-//                         child: const HomeSearchWidget()),
-//                     Card(
-//                       shadowColor: Colors.white.withOpacity(0),
-//                       color: const Color.fromARGB(130, 228, 228, 228)
-//                           .withOpacity(0.5),
-//                       child: SizedBox(
-//                           width: 57,
-//                           height: 57,
-//                           child: Image.asset(
-//                               'assets/icons/horizontal_slider.png')),
-//                     )
-//                   ],
-//                 ),
-//                 const HomeBannerWidget(),
-//                 const Column(
-//                   children: [
-//                     TitleRowWidget(title: 'Categories'),
-//                     HomeCategoriesListWidget(),
-//                   ],
-//                 ),
-//                 const TitleRowWidget(title: 'Best Selling'),
-//                 const ProductWidget(
-//                   category: 'bestSelling',
-//                 ),
-//                 const TitleRowWidget(title: 'New Arrival'),
-//                 const ProductWidget(
-//                   category: 'newArrival',
-//                 ),
-//                 const TitleRowWidget(title: 'Recommended for you'),
-//                 const ProductWidget(
-//                   category: 'recommendedForYou',
-//                 ),
-//                 SizedBox(
-//                   height: mediaQuery.height / 8,
-//                 )
-//               ],
-//             ),
-//           ),
-//           const NavBarWidget(),
-//         ],
-//       ),
-//     );
-//   }
-// }
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedIndex = 2;
+
+  List widgetOptions = const [
+    Text('Who Am I'),
+    Text('Countries'),
+    Text('Services'),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+          child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: selectedIndex == 0
+            ? const ProfileScreen()
+            : selectedIndex == 1
+                ? const CountriesScreen()
+                : const ServicesScreen(),
+      )),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/usercircle.png',
+              color: selectedIndex == 0 ? mainColor : Colors.grey,
+            ),
+            label: 'Who Am I',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/earth.png',
+              color: selectedIndex == 1 ? mainColor : null,
+            ),
+            label: 'Countries',
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/shoppingcart.png',
+              color: selectedIndex == 2 ? mainColor : null,
+            ),
+            label: 'Services',
+          ),
+        ],
+        currentIndex: selectedIndex,
+        selectedItemColor: mainColor,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}

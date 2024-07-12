@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kafiil_taskt/presentation/widgets/text_widget.dart';
 
-import '../style/text_form_field_style.dart';
-
-class TextFormFieldWidget extends StatelessWidget {
+class TextFormFieldWidget extends StatefulWidget {
   final String label;
   final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
@@ -11,6 +9,8 @@ class TextFormFieldWidget extends StatelessWidget {
   final bool autocorrect;
   final TextCapitalization textCapitalization;
   final bool obscureText;
+  final bool visibilityIcon;
+  final String defaultValue;
 
   const TextFormFieldWidget(
       {super.key,
@@ -19,9 +19,17 @@ class TextFormFieldWidget extends StatelessWidget {
       this.onSaved,
       this.obscureText = false,
       required this.inputType,
-      this.autocorrect = true,
-      required this.textCapitalization});
+      this.autocorrect = false,
+      required this.textCapitalization,
+      this.visibilityIcon = false,
+      required this.defaultValue});
 
+  @override
+  State<TextFormFieldWidget> createState() => _TextFormFieldWidgetState();
+}
+
+class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
+  bool passwordVisible = false;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,18 +38,46 @@ class TextFormFieldWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 15.0, bottom: 10),
           child: TextWidget(
-            text: label,
+            text: widget.label,
           ),
         ),
         TextFormField(
-          decoration: textFormFieldStyle,
+          initialValue: widget.defaultValue,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            filled: true,
+            fillColor: Colors.grey[200],
+            suffixIconColor: Colors.grey,
+            suffixIcon: widget.visibilityIcon
+                ? IconButton(
+                    icon: Icon(
+                      // Based on passwordVisible state choose the icon
+                      passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      // Update the state i.e. toogle the state of passwordVisible variable
+                      setState(() {
+                        passwordVisible = !passwordVisible;
+                      });
+                    },
+                  )
+                : null,
+          ),
+
           // const InputDecoration(labelText: 'Email Adress'),
-          validator: validator,
-          onSaved: onSaved,
-          keyboardType: inputType,
-          autocorrect: autocorrect,
+          validator: widget.validator,
+          onSaved: widget.onSaved,
+          keyboardType: widget.inputType,
+          autocorrect: widget.autocorrect,
           textCapitalization: TextCapitalization.none,
-          obscureText: obscureText,
+          obscureText: !widget.visibilityIcon
+              ? widget.obscureText
+              : passwordVisible
+                  ? false
+                  : true,
         ),
       ],
     );
