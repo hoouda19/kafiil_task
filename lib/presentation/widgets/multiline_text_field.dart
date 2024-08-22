@@ -4,13 +4,8 @@ import 'text_widget.dart';
 
 class MultilineTextField extends StatelessWidget {
   final String label;
-  final String defaultValue;
   final TextEditingController? controller;
-  const MultilineTextField(
-      {super.key,
-      this.controller,
-      required this.defaultValue,
-      required this.label});
+  const MultilineTextField({super.key, this.controller, required this.label});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +23,7 @@ class MultilineTextField extends StatelessWidget {
         SizedBox(
           height: mediaQuery.width / 3,
           child: TextField(
-            controller: controller!..text = defaultValue,
+            controller: controller,
             maxLines: null,
             expands: true,
             // keyboardType: TextInputType.multiline,

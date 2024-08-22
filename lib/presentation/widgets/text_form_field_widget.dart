@@ -10,19 +10,23 @@ class TextFormFieldWidget extends StatefulWidget {
   final TextCapitalization textCapitalization;
   final bool obscureText;
   final bool visibilityIcon;
-  final String defaultValue;
+  final String? defaultValue;
+  final int maxLength;
+  final TextEditingController? controller;
 
   const TextFormFieldWidget(
       {super.key,
       required this.label,
       this.validator,
       this.onSaved,
+      this.maxLength = 50,
       this.obscureText = false,
       required this.inputType,
       this.autocorrect = false,
       required this.textCapitalization,
       this.visibilityIcon = false,
-      required this.defaultValue});
+      this.defaultValue,
+      this.controller});
 
   @override
   State<TextFormFieldWidget> createState() => _TextFormFieldWidgetState();
@@ -43,7 +47,10 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
         ),
         TextFormField(
           initialValue: widget.defaultValue,
+          maxLength: widget.maxLength,
+          controller: widget.controller,
           decoration: InputDecoration(
+            counterText: '',
             border: OutlineInputBorder(
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(8.0),

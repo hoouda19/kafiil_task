@@ -20,6 +20,7 @@ class TextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
+      overflow: TextOverflow.fade,
       text,
       textAlign: textalign,
       style: TextStyle(

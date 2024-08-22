@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'text_widget.dart';
 
 class UserTypeRadio extends StatefulWidget {
-  const UserTypeRadio({super.key});
+  int selectedRole = 0;
+  UserTypeRadio({super.key, required this.selectedRole});
 
   @override
   State<UserTypeRadio> createState() => _UserTypeRadioState();
 }
 
 class _UserTypeRadioState extends State<UserTypeRadio> {
-  int _selectedRole = 0;
-
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
@@ -25,7 +24,7 @@ class _UserTypeRadioState extends State<UserTypeRadio> {
           ),
         ),
         SizedBox(
-          width: mediaQuery.width * 3 / 4,
+          width: mediaQuery.width,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -34,16 +33,16 @@ class _UserTypeRadioState extends State<UserTypeRadio> {
                   SizedBox(
                     width: 20,
                     child: Radio<int>(
-                      value: 1,
-                      groupValue: _selectedRole,
+                      value: 2,
+                      groupValue: widget.selectedRole,
                       onChanged: (value) {
                         setState(() {
-                          _selectedRole = value!;
+                          widget.selectedRole = value!;
                         });
                       },
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   const TextWidget(
@@ -55,11 +54,11 @@ class _UserTypeRadioState extends State<UserTypeRadio> {
               Row(
                 children: [
                   Radio<int>(
-                    value: 2,
-                    groupValue: _selectedRole,
+                    value: 1,
+                    groupValue: widget.selectedRole,
                     onChanged: (value) {
                       setState(() {
-                        _selectedRole = value!;
+                        widget.selectedRole = value!;
                       });
                     },
                   ),
@@ -73,10 +72,10 @@ class _UserTypeRadioState extends State<UserTypeRadio> {
                 children: [
                   Radio<int>(
                     value: 3,
-                    groupValue: _selectedRole,
+                    groupValue: widget.selectedRole,
                     onChanged: (value) {
                       setState(() {
-                        _selectedRole = value!;
+                        widget.selectedRole = value!;
                       });
                     },
                   ),

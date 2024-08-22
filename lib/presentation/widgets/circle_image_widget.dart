@@ -1,10 +1,31 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../style/colors.dart';
 
-class CircleImageWidget extends StatelessWidget {
-  final String image;
-  const CircleImageWidget({super.key, required this.image});
+class CircleImageWidget extends StatefulWidget {
+  CircleImageWidget({super.key, required this.imageFile});
+  Widget imageFile;
+
+  @override
+  State<CircleImageWidget> createState() => _CircleImageWidgetState();
+}
+
+class _CircleImageWidgetState extends State<CircleImageWidget> {
+  // Future<void> _pickImage() async {
+  //   try {
+  //     final ImagePicker picker = ImagePicker();
+  //     final XFile? image = await picker.pickImage(source: ImageSource.camera);
+  //     setState(() {
+  //       widget.imageFile = File(image!.path);
+  //     });
+  //   } catch (e) {
+  //     print('Error picking image: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +47,8 @@ class CircleImageWidget extends StatelessWidget {
                   width: 100,
                   // padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(100.0),
-                    child: Image.asset(
-                      image,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: widget.imageFile)),
             ),
             Container(
               alignment: Alignment.center,

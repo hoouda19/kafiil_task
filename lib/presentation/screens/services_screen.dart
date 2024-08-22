@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../../data/model/best_sellings_model.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
+import '../../domain/services_view_provider.dart';
 import '../widgets/service_widget.dart';
 import '../widgets/text_widget.dart';
 
@@ -10,11 +11,7 @@ class ServicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var mediaQuery = MediaQuery.of(context).size;
-    var servicesApi = Services(
-        basketNumber: 20,
-        id: DateTime.now().toString(),
-        image: 'assets/images/Product_pic.png',
-        title: 'Logo Design-Graphic Design Graphic Design');
+    var servicesList = Provider.of<ServicesViewModel>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,18 +25,33 @@ class ServicesScreen extends StatelessWidget {
             weight: FontWeight.bold,
           ),
         ),
-        SizedBox(
-          height: mediaQuery.height / 4,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 3,
-            itemBuilder: (context, index) => ServiceWidget(
-              image: servicesApi.image,
-              title: servicesApi.title,
-            ),
-          ),
-        ),
+        servicesList.isloading
+            ? Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.black,
+                  size: 100,
+                ),
+              )
+            : SizedBox(
+                height: mediaQuery.height / 4,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: servicesList.services.length,
+                  itemBuilder: (context, index) => ServiceWidget(
+                    priceAfterDiscount:
+                        servicesList.services[index].priceAfterDiscount,
+                    recommended: servicesList.services[index].recommended,
+                    discount: servicesList.services[index].discount,
+                    averageRating: servicesList.services[index].averageRating,
+                    completedSalesCount:
+                        servicesList.services[index].completedSalesCount,
+                    price: servicesList.services[index].price,
+                    mainImage: servicesList.services[index].mainImage,
+                    title: servicesList.services[index].title,
+                  ),
+                ),
+              ),
         const SizedBox(
           height: 20,
         ),
@@ -54,18 +66,35 @@ class ServicesScreen extends StatelessWidget {
         const SizedBox(
           height: 20,
         ),
-        SizedBox(
-          height: mediaQuery.height / 4,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 3,
-            itemBuilder: (context, index) => const ServiceWidget(
-              image: 'assets/images/Product_pic.png',
-              title: 'Logo Design-Graphic Design Graphic Design',
-            ),
-          ),
-        ),
+        servicesList.isloading
+            ? Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.black,
+                  size: 100,
+                ),
+              )
+            : SizedBox(
+                height: mediaQuery.height / 4,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: servicesList.popularServices.length,
+                  itemBuilder: (context, index) => ServiceWidget(
+                    priceAfterDiscount:
+                        servicesList.popularServices[index].priceAfterDiscount,
+                    recommended:
+                        servicesList.popularServices[index].recommended,
+                    discount: servicesList.popularServices[index].discount,
+                    averageRating:
+                        servicesList.popularServices[index].averageRating,
+                    completedSalesCount:
+                        servicesList.popularServices[index].completedSalesCount,
+                    price: servicesList.popularServices[index].price,
+                    mainImage: servicesList.popularServices[index].mainImage,
+                    title: servicesList.popularServices[index].title,
+                  ),
+                ),
+              ),
       ],
     );
   }
